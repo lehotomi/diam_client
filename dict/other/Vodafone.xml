@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<application id="16777238" name="3GPP Gx">
+<vendor vendor-id="Vodafone"            code="12645"    name="Vodafone"/>
+  <avp name="Context-Type" code="256" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+    <enum name="PRIMARY" code="0"/>
+    <enum name="SECONDARY" code="1"/>
+  </avp>
+  <avp name="Quota-Consumption-Time" code="257" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Quota-Holding-Time" code="258" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Time-Quota-Threshold" code="259" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Radio-Access-Technology" code="260" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+    <enum name="UTRAN" code="0"/>
+    <enum name="GERAN" code="1"/>
+    <enum name="WLAN" code="2"/>
+  </avp>
+  <avp name="Reporting-Reason" code="261" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+    <enum name="THRESHOLD" code="0"/>
+    <enum name="QHT" code="1"/>
+    <enum name="FINAL" code="2"/>
+    <enum name="QUOTA_EXHAUSTED" code="3"/>
+    <enum name="VALIDITY_TIME" code="4"/>
+    <enum name="OTHER_QUOTA_TYPE" code="5"/>
+    <enum name="RATING_CONDITION_CHANGE" code="6"/>
+    <enum name="FORCED_REAUTHORISATION " code="7"/>
+  </avp>
+  <avp name="Rulebase-Id" code="262" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="UTF8String"/>
+  </avp>
+  <avp name="Time-Of-First-Usage" code="263" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Time"/>
+  </avp>
+  <avp name="Time-Of-Last-Usage" code="264" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Time"/>
+  </avp>
+  <avp name="Trigger" code="265" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <grouped>
+      <gavp name="Trigger-Type"/>
+    </grouped>
+  </avp>
+  <avp name="Trigger-Type" code="266" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+    <enum name="CHANGE_IN_SGSN_IP_ADDRESS" code="1"/>
+    <enum name="CHANGEINQOS_ANY" code="2"/>
+    <enum name="CHANGEINLOCATION_ANY" code="3"/>
+    <enum name="CHANGEINRAT" code="4"/>
+    <enum name="CHANGEINQOS_TRAFFIC_CLASS" code="10"/>
+    <enum name="CHANGEINQOS_RELIABILITY_CLASS" code="11"/>
+    <enum name="CHANGEINQOS_DELAY_CLASS " code="12"/>
+    <enum name="CHANGEINQOS_PEAK_THROUGHPUT" code="13"/>
+    <enum name="CHANGEINQOS_PRECEDENCE_CLASS" code="14"/>
+    <enum name="CHANGEINQOS_MEAN_THROUGHPUT" code="15"/>
+    <enum name="CHANGEINQOS_MAXIMUM_BIT_RATE_FOR_UPLINK" code="16"/>
+    <enum name="CHANGEINQOS_MAXIMUM_BIT_RATE_FOR_DOWNLINK" code="17"/>
+    <enum name="CHANGEINQOS_RESIDUAL_BER" code="18"/>
+    <enum name="CHANGEINQOS_SDU_ERROR_RATIO" code="19"/>
+    <enum name="CHANGEINQOS_TRANSFER_DELAY" code="20"/>
+  </avp>
+  <avp name="User-Location-Information" code="267" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Volume-Quota-Threshold" code="268" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Origin-State-Id" code="278" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="URL-Append" code="281" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Enumerated"/>
+    <enum name="DO_NOT_APPEND_URL" code="0"/>
+    <enum name="APPEND_URL" code="1"/>    
+  </avp>
+  <!-- ********************** END Vodafone AVPS ***************** -->
+  <!-- * -->
+  <!-- **** Vodafone Hungary SMS Charging (edited by krizso) **** -->
+  <!-- * -->
+  <avp name="SMS-Information" code="600" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must" >
+  <grouped>
+    <gavp name="SMS-Node"/>
+    <gavp name="Client-Address"/>
+    <gavp name="Originator-SCCP-Address"/>
+    <gavp name="Recipient-SCCP-Address"/>
+    <gavp name="SMSC-Address"/>
+    <gavp name="Data-Coding-Scheme"/>
+    <gavp name="SM_Destination-Interface"/>
+    <gavp name="SM-Discharge-Time"/>
+    <gavp name="SM-Message-Type"/>
+    <gavp name="Originator-Interface"/>
+    <gavp name="SM-Protocol-ID"/>
+    <gavp name="Reply-Path-Requested"/>
+    <gavp name="SM-Status"/>
+    <gavp name="SM-User-Data-Header"/>
+    <gavp name="Number-Of-Messages-Sent"/>
+    <gavp name="Recipients"/>
+  </grouped>
+  </avp>
+  <avp name="SMS-Node" code="618" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Enumerated"/>
+    <enum name="SMS Router" code="0"/>
+    <enum name="IP-SM-GW" code="1"/>
+    <enum name="SMS Router and IP-SM-GW" code="2"/>
+    <enum name="SMS-SC" code="3"/>
+  </avp>
+  <avp name="SM-Originator-Interface" code="613" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <grouped>
+      <gavp name="SM-Interface-Id"/>
+      <gavp name="SM-Interface-Text"/>
+      <gavp name="SM-Interface-Port"/>
+      <gavp name="SM-Interface-Type"/>
+    </grouped>
+  </avp>
+  <avp name="SM-Destination-Interface" code="611" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <grouped>
+      <gavp name="SM-Interface-Id"/>
+      <gavp name="SM-Interface-Text"/>
+      <gavp name="SM-Interface-Port"/>
+      <gavp name="SM-Interface-Type"/>
+    </grouped>
+  </avp>
+  <avp name="SM-Interface-Id" code="603" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="UTF8String"/>
+  </avp>
+  <avp name="SM-Interface-Port" code="604" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="UTF8String"/>
+  </avp>
+  <avp name="SM-Interface-Text" code="605" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="UTF8String"/>
+  </avp>
+  <avp name="SM-Interface-Type" code="606" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Enumerated"/>
+    <enum name="Unknown" code="0"/>
+    <enum name="MOBILE_ORIGINATING" code="1"/>
+    <enum name="MOBILE_TERMINATING" code="2"/>
+    <enum name="APPLICATION_ORIGINATING" code="3"/>
+    <enum name="APPLICATION_TERMINATION" code="4"/>
+  </avp>
+  <avp name="SM-Message-Type" code="617" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="Enumerated"/>
+    <enum name="SUBMISSION" code="0"/>
+    <enum name="DELIVERY_REPORT" code="1"/>
+    <enum name="SM Service Request" code="2"/>
+  </avp>
+    <avp name="Client-Address" code="601" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+      <type type-name="IPAddress"/>
+    </avp>
+    <avp name="Originating-SCCP-Address" code="607" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+      <type type-name="UTF8String"/>
+    </avp>
+  <avp name="SMSC-Address" code="615" vendor-id="Vodafone" mandatory="mustnot" vendor-bit="must">
+    <type type-name="UTF8String"/>
+  </avp>
+</application>

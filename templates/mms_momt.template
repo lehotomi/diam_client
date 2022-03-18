@@ -1,0 +1,55 @@
+!header command_code:272 application_id:4 request:1 proxiable:1   #credit control request
+
+0.263.1 UTF8String '{{session_id}}'                         #session_id
+0.264.1 UTF8String '{{origin_host}}'     #orig_host
+0.296.1 UTF8String '{{origin_realm}}'    #orig realm
+0.283.1 UTF8String '{{destination_realm}}'    #Destination realm
+0.461.1 UTF8String 'version1.12645.000.000.6.32270@3gpp.org'    #Service_Context_Id
+0.258.1 Unsigned32 '4'		                                #Auth_Application_Id
+0.416.1 Enumerated '4'                                      #CC_Request_Type
+0.415.1 Unsigned32 '0'                                      #CC_Request_Number
+0.55.1 Time '{{!now}}'                                      #Event_Time
+0.443.1 Grouped                                             #Subscription_Id
+    0.450.1 Enumerated '0'                                  #Subscription_Id_Type
+    0.444.1 UTF8String '{{msisdn_a}}'
+0.443.1 Grouped                                             #Subscription_Id
+    0.450.1 Enumerated '1'                                  #Subscription_Id_Type
+    0.444.1 UTF8String '{{imsi_a}}'
+0.437.1 Grouped                                             #Requested_service_units
+    0.417.1 Unsigned64 '1'                                  #Service_Identifier
+0.436.1 Enumerated '0'                                      #Requested_Action
+0.458.1 Grouped                                             #User_Equipment_Info    
+    0.459.1 Enumerated '3'                                  #Equipment_Info_Type MODIFIED_EUI64 (3)
+    0.460.1 UTF8String 'UNKNOWN_MMS_CAPABLE'                #Equipment_Info_Value
+10415.873.1 Grouped                                         #Service_Information
+    10415.874.1 Grouped                                     #PS_Information
+        #10415.22.1 OctetString '0012f607ffffffff'           #3GPP_User_Location_Info
+        10415.22.1 OctetString '{{user_location:21670!mccnmc_to_user_loc}}'           #3GPP_User_Location_Info      
+    10415.877.1 Grouped                                     #MMS_Information
+        10415.886.1 Grouped                                 #Originator_Address
+            10415.899.1 Enumerated '1'                      #Address_Type
+            10415.897.1 UTF8String '{{msisdn_a}}'            
+            10415.898.1 Grouped                                            #Address Domain
+                10415.1200.1 UTF8String '{{imsi_a:21670123456789}}'         #Domain-Name
+                10415.8.1 UTF8String '21670'                               #3GPP-IMSI-MCC-MNC
+        10415.1201.1 Grouped                                #Recipient_Address
+            10415.899.1 Enumerated '1'                      #Address_Type
+            10415.897.1 UTF8String '{{msisdn_b}}'            
+            10415.898.1 Grouped                                            #Address Domain
+                10415.1200.1 UTF8String '{{imsi_b:21670123456789}}'         #Domain-Name
+                10415.8.1 UTF8String '21670'                               #3GPP-IMSI-MCC-MNC        
+        10415.1202.1 Time '{{!now}}'                         #Submission-Time
+        10415.1203.1 Grouped                                 #MM-Content-Type
+            10415.1204.1 Enumerated '{{mms_content_type:3}}'            #Type-Number
+            10415.1206.1 Unsigned32 '{{mms_content_size:1000}}'         #Content-Size
+            10415.1207.1 Grouped                                        #Additional-Content-Information
+                10415.1204.1 Enumerated '{{mms_content_type:3}}'        #Type-Number
+                10415.1206.1 Unsigned32 '{{mms_content_size:1000}}'     #Content-Size
+        10415.1210.1 UTF8String '{{message_id}}'                        #Message_ID        
+        10415.1211.1 Enumerated '1'                                     #Message-Type m-send-req (1)
+        10415.1212.1 Unsigned32 '{{mms_content_size:1000}}'             #Message-Size
+        10415.1213.1 Grouped                                            #Message-Class
+            10415.1214.1 Enumerated '0'                                 #Class-Identifier Personal (0)
+        10415.1216.1 Enumerated '0'                                     #Delivery-Report-Requested No (0)
+        10415.1222.1 Enumerated '0'                                     #Read-Reply-Report-Requested No (0)
+        10415.1218.1 UTF8String '0'                                     #Applic-ID  

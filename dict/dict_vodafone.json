@@ -1,0 +1,35 @@
+{
+    "commands": [
+
+    ],
+    
+    "avps": [
+      {"code":605,"name":"SM-Interface-Text","vendor-id":12645,"type":"UTF8String"},
+      {"code":264,"name":"Time-Of-Last-Usage","vendor-id":12645,"type":"Time"},
+      {"code":615,"name":"SMSC-Address","vendor-id":12645,"type":"UTF8String"},
+      {"code":262,"name":"Rulebase-Id","vendor-id":12645,"type":"UTF8String"},
+      {"code":281,"name":"URL-Append","vendor-id":12645,"type":"Enumerated","enumerated": {"1":"APPEND_URL","0":"DO_NOT_APPEND_URL"}},
+      {"code":601,"name":"Client-Address","vendor-id":12645,"type":"Address"},
+      {"code":260,"name":"Radio-Access-Technology","vendor-id":12645,"type":"Unsigned32"},
+      {"code":606,"name":"SM-Interface-Type","vendor-id":12645,"type":"Enumerated","enumerated": {"4":"APPLICATION_TERMINATION","3":"APPLICATION_ORIGINATING","2":"MOBILE_TERMINATING","1":"MOBILE_ORIGINATING","0":"Unknown"}},
+      {"code":278,"name":"Origin-State-Id","vendor-id":12645,"type":"Unsigned32"},
+      {"code":258,"name":"Quota-Holding-Time","vendor-id":12645,"type":"Unsigned32"},
+      {"code":263,"name":"Time-Of-First-Usage","vendor-id":12645,"type":"Time"},
+      {"code":613,"name":"SM-Originator-Interface","vendor-id":12645,"type":"grouped"},
+      {"code":265,"name":"Trigger","vendor-id":12645,"type":"grouped"},
+      {"code":268,"name":"Volume-Quota-Threshold","vendor-id":12645,"type":"Unsigned32"},
+      {"code":603,"name":"SM-Interface-Id","vendor-id":12645,"type":"UTF8String"},
+      {"code":618,"name":"SMS-Node","vendor-id":12645,"type":"Enumerated","enumerated": {"2":"SMS Router and IP-SM-GW","1":"IP-SM-GW","3":"SMS-SC","0":"SMS Router"}},
+      {"code":267,"name":"User-Location-Information","vendor-id":12645,"type":"OctetString"},
+      {"code":607,"name":"Originating-SCCP-Address","vendor-id":12645,"type":"UTF8String"},
+      {"code":261,"name":"Reporting-Reason","vendor-id":12645,"type":"Unsigned32"},
+      {"code":611,"name":"SM-Destination-Interface","vendor-id":12645,"type":"grouped"},
+      {"code":256,"name":"Context-Type","vendor-id":12645,"type":"Unsigned32"},
+      {"code":266,"name":"Trigger-Type","vendor-id":12645,"type":"Unsigned32"},
+      {"code":617,"name":"SM-Message-Type","vendor-id":12645,"type":"Enumerated","enumerated": {"2":"SM Service Request","1":"DELIVERY_REPORT","0":"SUBMISSION"}},
+      {"code":257,"name":"Quota-Consumption-Time","vendor-id":12645,"type":"Unsigned32"},
+      {"code":259,"name":"Time-Quota-Threshold","vendor-id":12645,"type":"Unsigned32"},
+      {"code":604,"name":"SM-Interface-Port","vendor-id":12645,"type":"UTF8String"},
+      {"code":600,"name":"SMS-Information","vendor-id":12645,"type":"grouped"}
+    ]    
+}
