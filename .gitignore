@@ -2,3 +2,4 @@ _old/
 env/
 .hg/
 info
+.hgignore

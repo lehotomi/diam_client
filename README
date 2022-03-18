@@ -1,6 +1,8 @@
 Sending diameter message based on templates (without coding), for simple tests.
 Sessions(not event based messages) will be added.
 
+A CER will be sent and if the result is success then a message based on the template will be sent.
+
 build:
 cd session
 go build -o ../send_mess main.go 
