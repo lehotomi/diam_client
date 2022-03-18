@@ -1,18 +1,18 @@
 ---
 diam:
   peer: localhost:3868
-  destination_realm: VODAMCAS1.HU
-  origin_host: testpetcrp
-  origin_realm: vodafone.hu
+  destination_realm: destrealm
+  origin_host: myhost
+  origin_realm: myrealm
 conf_dir:  # absolute path or relative to cwd
-  dictionary: "../dict"
-  templates: "../templates"
+  dictionary: "./dict"
+  templates: "./templates"
 template:
   type: event
-  name: sms_momt
+  name: mms_momt 
 props:
-  msisdn_a: 36702209116
+  msisdn_a: 12345
   message_id: tool
-  orig_sccp: 36709996152
-  imsi_a: 21670123456789
-  msisdn_b : 36702209173
+  orig_sccp: 324242
+  imsi_a: 21970123456789
+  msisdn_b : 3770220933242
