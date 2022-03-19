@@ -27,7 +27,7 @@ template:
 props:                    # -> these values will be substituted in the template
   msisdn_a: 12345
   message_id: tool
-  orig_sccp: 324242
+  user_location: 21670
   imsi_a: 21970123456789
   msisdn_b : 3770220933242
 
