@@ -162,7 +162,8 @@ func recv_handler() {
 	for {
 		select {
 		case inc_msg := <-c_rcv_ch:
-			fmt.Println("<- got result:", inc_msg) //TODO pretty print
+//			fmt.Println("<- got result:", inc_msg) //TODO pretty print
+			fmt.Println(inc_msg.ToString())
 			g_goproc_chan <- inc_msg
 		}
 	}
