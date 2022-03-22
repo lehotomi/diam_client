@@ -52,7 +52,7 @@ func init() {
 
 	common.ReadConfig(cfg_byte)
 
-	l.Init(os.Stdout, os.Stdout, os.Stderr, os.Stderr /*log.Ldate|*/ /*log.Lshortfile|*/, log.Ltime) //ioutil.Discard
+	l.Init(os.Stdout, os.Stdout, os.Stderr, os.Stderr /*log.Ldate|*/, log.Llongfile | log.Ltime) //ioutil.Discard
 
 	c_dic_dict, ok := common.GetConfig("conf_dir", "dictionary")
 	if !ok {
@@ -137,16 +137,16 @@ func main() {
 		if res_code_avp != nil {
 			res_code = res_code_avp.GetIntValue()
 		} else {
-			fmt.Println("CEA does not contain result code")
+			common.Log.Println("CEA does not contain result code")
 			os.Exit(2)
 		}
 
 		if res_code != 2001 {
-			fmt.Printf("Got result code %d in CEA", res_code)
+			common.Log.Printf("Got result code %d in CEA", res_code)
 			os.Exit(3)
 		}
 
-		l.Trace.Printf("CEA res code:%d", res_code)
+		//common.Log.Printf("CEA res code:%d", res_code)
 		//
 	case <-timer.C:
 		fmt.Println("Connect timeout to:", common.GetConfigVal("diam", "peer"))
@@ -163,7 +163,7 @@ func recv_handler() {
 		select {
 		case inc_msg := <-c_rcv_ch:
 //			fmt.Println("<- got result:", inc_msg) //TODO pretty print
-			fmt.Println(inc_msg.ToString())
+			//fmt.Println(inc_msg.ToString())
 			g_goproc_chan <- inc_msg
 		}
 	}
@@ -187,7 +187,7 @@ func createNextSession(template string /*, f_end func (sess string)*/) {
 	pars_plus["origin_realm"] = common.GetConfigVal("diam", "origin_realm")
 	pars_plus["destination_realm"] = common.GetConfigVal("diam", "destination_realm")
 
-	l.Trace.Println("parameters for session:", pars_plus)
+	//common.Log.Println("parameters for session:", pars_plus)
 	fmt.Printf("-> sending template %s with properties: %s\n", template, pars_plus)
 	if g_session_type == EVENT {
 		go common.EventSession(template, c_sent_sid, pars_plus, c_send_ch, g_goproc_chan, c_end_func)
