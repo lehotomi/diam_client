@@ -62,7 +62,7 @@
       {"code":826,"name":"Content-Type","vendor-id":10415,"type":"UTF8String"},
       {"code":1452,"name":"Trace-Collection-Entity","vendor-id":10415,"type":"IPAddress"},
       {"code":1619,"name":"Subscribed-Periodic-RAU-TAU-Timer","vendor-id":10415,"type":"Unsigned32"},
-      {"code":3103,"name":"S6-Service-ID","vendor-id":10415,"type":"Enumerated","enumarated": {"":"name","":"code"}},
+      {"code":3103,"name":"S6-Service-ID","vendor-id":10415,"type":"Enumerated"},
       {"code":851,"name":"Trunk-Group-ID","vendor-id":10415,"type":"grouped"},
       {"code":263,"name":"Session-Id","vendor-id":0,"type":"UTF8String"},
       {"code":1258,"name":"Event-Charging-TimeStamp","vendor-id":10415,"type":"Time"},

@@ -92,3 +92,31 @@ templates/mms_momt.template:
         10415.1216.1 Enumerated '0'                                     #Delivery-Report-Requested No (0)
         10415.1222.1 Enumerated '0'                                     #Read-Reply-Report-Requested No (0)
         10415.1218.1 UTF8String '0'                                     #Applic-ID
+
+Output:
+RES:
+---
+cmd_code:   Credit-Control(272)
+flags:      0x40 Answer,Proxiable
+app_id:     Diameter Credit Control Application(4)
+hop_by_hop: 0xcf54d1c3
+end_by_end: 0xc10207a8
+----
+AVP: Session-Id(263) f=-M val=myhost;1134257556;1
+AVP: Result-Code(268) f=-M val=DIAMETER_SUCCESS(2001)
+AVP: Origin-Host(264) f=-M val=otherhost
+AVP: Origin-Realm(296) f=-M val=otherrealm
+AVP: Auth-Application-Id(258) f=-M val=4
+AVP: CC-Request-Type(416) f=-M val=EVENT_REQUEST(4)
+AVP: CC-Request-Number(415) f=-M val=0
+AVP: Event-Timestamp(55) f=-M val=2022-03-24 09:31:23 +0100 CET
+AVP: Subscription-Id(443) f=-M
+    AVP: Subscription-Id-Type(450) f=-M val=END_USER_E164(0)
+    AVP: Subscription-Id-Data(444) f=-M val=12345
+AVP: Granted-Service-Unit(431) f=-M
+    AVP: CC-Service-Specific-Units(417) f=-M val=1
+AVP: Cost-Information(423) f=-M
+    AVP: Unit-Value(445) f=-M
+        AVP: Value-Digits(447) f=-M val=0
+    AVP: Currency-Code(425) f=-M val=348
+09:31:23 <- 36702209116 SUCCESS(2001) 12345 179.932847ms
