@@ -119,4 +119,3 @@ AVP: Cost-Information(423) f=-M
     AVP: Unit-Value(445) f=-M
         AVP: Value-Digits(447) f=-M val=0
     AVP: Currency-Code(425) f=-M val=348
-09:31:23 <- 36702209116 SUCCESS(2001) 12345 179.932847ms
