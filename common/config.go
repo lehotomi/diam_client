@@ -9,6 +9,46 @@ import (
 
 var env map[string]string = make(map[string]string)
 
+type Config map[string]map[string]string
+
+func ReadConfig(in []byte) Config {
+    var c_conf Config
+	readEnv()
+
+	if err := yaml.Unmarshal(in, &c_conf); err != nil {
+		fmt.Println(err)
+		os.Exit(3)
+	}
+
+	//fmt.Println("naaaaaaa")
+
+	for key, _ := range c_conf {
+		//fmt.Println("FFF:",key,entry)
+		sec_env := getEnvSection(key)
+		for sec_key, sec_val := range sec_env {
+			c_conf[key][sec_key] = sec_val
+		}
+	}
+
+	/*
+		fmt.Println(c_conf["tcp"]["peer"])*/
+	/*
+			    switch i := entry.(type) {
+		        case string:
+		            fmt.Printf("i is a string: %+v\n", i)
+		        case map[string]interface{}:
+		            fmt.Printf("i is a map.")
+		            for k,v := range i {
+		                fmt.Printf("%s=%v\n",k,v)
+		            }
+		        default:
+		            fmt.Printf("Type i=%s", i)
+		        }
+		    }
+	*/
+	return c_conf
+}
+
 func readEnv() {
 	for _, e := range os.Environ() {
 		if i := strings.Index(e, "="); i >= 0 {
@@ -17,20 +57,19 @@ func readEnv() {
 	}
 }
 
-type Config map[string]map[string]string
 
-var c_conf Config
+//var c_conf Config
 
-func GetConfigVal(section string, par string) string {
+func (c_conf Config) GetConfigVal(section string, par string) string {
 
-	val, exists := GetConfig(section, par)
+	val, exists := c_conf.GetConfig(section, par)
 	if exists {
 		return val
 	}
 	return "not_set"
 }
 
-func GetConfigMap(section string) map[string]string {
+func (c_conf Config) GetConfigMap(section string) map[string]string {
 	//fmt.Println("map:",section)
 	sec, exists := c_conf[section]
 	if exists {
@@ -40,7 +79,7 @@ func GetConfigMap(section string) map[string]string {
 	return nil
 }
 
-func GetConfig(section string, par string) (string, bool) {
+func (c_conf Config) GetConfig(section string, par string) (string, bool) {
 
 	/*val,exists := env[section+"_"+par]
 	if exists {
@@ -76,40 +115,4 @@ func getEnvSection(sec string) map[string]string {
 	}
 
 	return ret
-}
-
-func ReadConfig(in []byte) {
-	readEnv()
-
-	if err := yaml.Unmarshal(in, &c_conf); err != nil {
-		fmt.Println(err)
-		os.Exit(3)
-	}
-
-	//fmt.Println("naaaaaaa")
-
-	for key, _ := range c_conf {
-		//fmt.Println("FFF:",key,entry)
-		sec_env := getEnvSection(key)
-		for sec_key, sec_val := range sec_env {
-			c_conf[key][sec_key] = sec_val
-		}
-	}
-
-	/*
-		fmt.Println(c_conf["tcp"]["peer"])*/
-	/*
-			    switch i := entry.(type) {
-		        case string:
-		            fmt.Printf("i is a string: %+v\n", i)
-		        case map[string]interface{}:
-		            fmt.Printf("i is a map.")
-		            for k,v := range i {
-		                fmt.Printf("%s=%v\n",k,v)
-		            }
-		        default:
-		            fmt.Printf("Type i=%s", i)
-		        }
-		    }
-	*/
 }

@@ -1,0 +1,6 @@
+---
+diam:
+  peer: localhost:3868
+  destination_realm: destrealm
+  origin_host: myhost
+  origin_realm: myorig

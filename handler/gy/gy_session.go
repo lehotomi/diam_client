@@ -1,20 +1,24 @@
-package common
+package gy
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
+	"time"	
 	d "github.com/lehotomi/diam/diam"
-	l "github.com/lehotomi/diam/mlog"
+	//l "github.com/lehotomi/diam/mlog"
+
 	t "github.com/lehotomi/diam/templ"
 	//"math/rand"
 	"os"
+	com "client/common"
 )
 
-const time_between_updates_milli = 1350
+//var time_between_updates_milli time.Duration = 1350
 const time_between_init_and_first_update_milli = 10
-const g_number_of_updates = 8
+var g_def_number_of_updates = 8
+var g_def_time_between_updates_milli time.Duration = 500
+var g_print_decoded_message bool = false
 
 const (
 	CLOSED = iota
@@ -89,12 +93,41 @@ const (
 	TERM_SENT
 )
 
-func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.Message, ch_recv <-chan d.Message, f_end func(sess string),
+func GySession(template []string, sess_par map[string]string, sess_id string, base_pars map[string]string, ch_send chan<- d.Message, ch_recv <-chan d.Message, f_end func(sess string),
 
 //f_timer func (when time.Duration),
 ) {
 	//defer f_end(sess_id)
-	m_nof_updates := g_number_of_updates
+	m_nof_updates := g_def_number_of_updates
+	if val, ok := sess_par["number_of_updates"]; ok {
+		nof_upd_i, err := strconv.Atoi(val)
+		if err == nil {
+			m_nof_updates = nof_upd_i
+		}
+	}
+
+	m_time_between_updates_milli := g_def_time_between_updates_milli
+	if val, ok := sess_par["time_between_updates_milli"]; ok {
+		time_between_i, err := strconv.Atoi(val)
+		if err == nil {
+			m_time_between_updates_milli = time.Duration(time_between_i)
+		}
+	}
+
+	m_print_decoded_message := g_print_decoded_message
+	if val, ok := sess_par["print_decoded_message"]; ok {
+		if  val == "true" {
+			m_print_decoded_message = true
+		} else {
+			m_print_decoded_message = false
+		}
+	}
+	if m_print_decoded_message {
+
+	}
+
+
+	//m_nof_updates := g_number_of_updates
 	m_state := WAITING_FOR_ANSWER
 	pars := make(map[string]string)
 	for k, v := range base_pars {
@@ -106,7 +139,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 	for _, part := range strings.Split(pars["req_category"], ",") {
 		c_cat, err := strconv.Atoi(part)
 		if err != nil {
-			l.Error.Printf("Cannot convert category %s to integer", part)
+			com.Error.Printf("Cannot convert category %s to integer", part)
 			os.Exit(-1)
 		}
 		req_cat = append(req_cat, uint32(c_cat))
@@ -117,7 +150,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 	m_used_units, err := strconv.ParseUint(pars["total_used_octets"], 10, 64)
 
 	if err != nil {
-		l.Warn.Printf("Cannot convert %s to integer", pars["total_used_octets"])
+		com.Warn.Printf("Cannot convert %s to integer", pars["total_used_octets"])
 		m_used_units = 1000
 	}
 	for _, v := range req_cat {
@@ -133,7 +166,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 
 	//pars["dest_host"] = "STAYWITHME"
 	pars["user_name"] = pars["msisdn_a"] + "@" + pars["apn"]
-	c_data, _ := t.FillTemplate("data_init", pars)
+	c_data, _ := t.FillTemplate(template[0], pars)
 	//c_data_upd, _ := t.FillTemplate("data_upd",pars)
 
 	//c_data_term, _ := t.FillTemplate("data_term",pars)
@@ -141,8 +174,11 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 	startTime := time.Now()
 	c_sess_state := INIT_SENT
 	ite := 0
-	l.Trace.Printf("sending init:%s", sess_id)
-	l.Info.Printf("-> I %d %s", ite, pars["msisdn_a"])
+	//com.Trace.Printf("sending init:%s", sess_id)
+	com.Info.Printf("-> I %d %s", ite, pars["msisdn_a"])
+	if m_print_decoded_message { 
+		com.Log.Println("\nREQ:\n---\n"+c_data.ToString())
+	}
 	ch_send <- c_data
 
 	const_timeout := 2 * time.Second
@@ -157,7 +193,9 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 	for {
 		select {
 		case inc_m := <-ch_recv:
-
+			if m_print_decoded_message { 
+				com.Log.Println("\nRES:\n---\n"+inc_m.ToString())
+			}
 			if inc_m.IsAnswer() && (inc_m.GetCmdCode() == d.CC_CREDIT_CONTROL) { // CCA
 
 				///timeout.Stop()
@@ -170,7 +208,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 				if c_orighost_avp != nil {
 					c_orighost = c_orighost_avp.GetStringValue()
 				} else {
-					l.Warn.Printf("init answer dows not contain OrigHost AVP:%s", sess_id)
+					com.Warn.Printf("init answer dows not contain OrigHost AVP:%s", sess_id)
 					f_end(sess_id)
 					return
 				}
@@ -181,19 +219,19 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 				if res_code_avp != nil {
 					res_code = res_code_avp.GetIntValue()
 				} else {
-					l.Warn.Printf("result does not contain the result code avp:%s", sess_id)
-					l.Info.Printf("<- I %d %s %s %s", ite, pars["msisdn_a"], c_orighost, diff)
+					com.Warn.Printf("result does not contain the result code avp:%s", sess_id)
+					com.Info.Printf("<- I %d %s %s %s", ite, pars["msisdn_a"], c_orighost, diff)
 					f_end(sess_id)
 					return
 				}
 
 				//l.Info.Println("data on_message:",pars["msisdn_a"],sess_id,ite, diff, res_code, inc_m.GetCmdCode())
 				if ite == 0 {
-					l.Info.Printf("<- I %d %s %s(%d) %s %s", ite, pars["msisdn_a"], result_code_to_string(res_code), res_code, c_orighost, diff)
+					com.Info.Printf("<- I %d %s %s(%d) %s %s", ite, pars["msisdn_a"], com.Result_code_to_string(res_code), res_code, c_orighost, diff)
 				}
 
 				if res_code != 2001 {
-					l.Warn.Printf("Got result code %d for message:%s %s", res_code, sess_id, pars["msisdn_a"])
+					com.Warn.Printf("Got result code %d for message:%s %s", res_code, sess_id, pars["msisdn_a"])
 					f_end(sess_id)
 					return
 				}
@@ -204,12 +242,12 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 					//check orig host in incoming message
 
 					pars["destination_host"] = c_orighost
-					l.Trace.Printf("sending first update:%s", sess_id)
+					//com.Trace.Printf("sending first update:%s", sess_id)
 					c_sess_state = UPDATE_SENDING
 				}
 
 				if c_sess_state == UPDATE_SENT { // update answer
-					l.Trace.Printf("sending updates:%s", sess_id)
+					//com.Trace.Printf("sending updates:%s", sess_id)
 					//l.Info.Println("bef cats:")
 					//for k,v := range cats {
 					//   l.Info.Println(k,v)
@@ -221,20 +259,20 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 						//l.Info.Println("mscc",v)
 						rg_avp := v.FindAVP(0, 432)
 						if rg_avp == nil {
-							l.Warn.Printf("mscc result does not contain rating group:%s", sess_id)
+							com.Warn.Printf("mscc result does not contain rating group:%s", sess_id)
 							continue
 						}
 						rg_int := rg_avp.GetIntValue()
 
 						rc_avp := v.FindAVP(0, 268)
 						if rc_avp == nil {
-							l.Warn.Printf("mscc result does not contain result code avp, sessid %s rg:%d", sess_id, rg_int)
+							com.Warn.Printf("mscc result does not contain result code avp, sessid %s rg:%d", sess_id, rg_int)
 							continue
 						}
 
 						c_category, ok := cats[uint32(rg_avp.GetIntValue())]
 						if !ok {
-							l.Warn.Printf("mscc result contains category which was not requested sessid %s rg:%d", sess_id, rg_int)
+							com.Warn.Printf("mscc result contains category which was not requested sessid %s rg:%d", sess_id, rg_int)
 						}
 						rc_int := rc_avp.GetIntValue()
 
@@ -246,7 +284,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 						if rc_int == d.CREDIT_LIMIT_REACHED {
 							c_category.state = LIMIT_REACHED
 						} else if rc_int >= 3000 {
-							l.Warn.Printf("mscc result code >= 3000, rc:%d sessid %s rg:%d %s", rc_int, sess_id, rg_int, pars["msisdn_a"])
+							com.Warn.Printf("mscc result code >= 3000, rc:%d sessid %s rg:%d %s", rc_int, sess_id, rg_int, pars["msisdn_a"])
 							c_category.state = FAILED
 							continue
 						}
@@ -257,7 +295,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 						granted_int := -1
 						if granted_avp != nil {
 							if !granted_avp.IsGrouped() {
-								l.Warn.Printf("mscc result granted_unit avp is not grouped sessid %s rg:%d", sess_id, rg_avp.GetIntValue())
+								com.Warn.Printf("mscc result granted_unit avp is not grouped sessid %s rg:%d", sess_id, rg_avp.GetIntValue())
 								continue
 							}
 							gavps := granted_avp.GetGroupAVPs()
@@ -292,13 +330,13 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 
 						}
 						if c_category.state != REDIRECTED {
-							info = append(info, fmt.Sprintf("[%d,%s(%d),%d]", rg_int, result_code_to_string(rc_int), rc_int, granted_int))
+							info = append(info, fmt.Sprintf("[%d,%s(%d),%d]", rg_int, com.Result_code_to_string(rc_int), rc_int, granted_int))
 						} else {
-							info = append(info, fmt.Sprintf("[%d,%s(%d),redir:%s]", rg_int, result_code_to_string(rc_int), rc_int, redir_url))
+							info = append(info, fmt.Sprintf("[%d,%s(%d),redir:%s]", rg_int, com.Result_code_to_string(rc_int), rc_int, redir_url))
 						}
 						//l.Info.Println("\trg",granted_avp.GetIntValue())
 					} //range cat
-					l.Info.Printf("<- U %d %s %s %s %s", ite, pars["msisdn_a"], c_orighost, strings.Join(info, " "), diff)
+					com.Info.Printf("<- U %d %s %s %s %s", ite, pars["msisdn_a"], c_orighost, strings.Join(info, " "), diff)
 
 					//l.Info.Println("aft cats:",cats)
 					//l.Info.Println("aft cats:")
@@ -317,8 +355,8 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 				}
 
 				if c_sess_state == TERM_SENT {
-					l.Info.Printf("<- T %d %s %s(%d) %s %s", ite, pars["msisdn_a"], result_code_to_string(res_code), res_code, c_orighost, diff)
-					l.Trace.Printf("session ended:%s", sess_id)
+					com.Info.Printf("<- T %d %s %s(%d) %s %s", ite, pars["msisdn_a"], com.Result_code_to_string(res_code), res_code, c_orighost, diff)
+					//com.Trace.Printf("session ended:%s", sess_id)
 					f_end(sess_id)
 					return
 				}
@@ -326,7 +364,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 				if ite == 0 {
 					ticker.Reset(time_between_init_and_first_update_milli * time.Millisecond)
 				} else {
-					ticker.Reset(time_between_updates_milli * time.Millisecond)
+					ticker.Reset(m_time_between_updates_milli * time.Millisecond)
 				}
 				ite = ite + 1
 				//sched = time.NewTimer(500*time.Millisecond)
@@ -366,7 +404,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 			//case  <-sched.C:
 			//fmt.Println("ticker:",sess_id)
 			if m_state == WAITING_FOR_ANSWER {
-				l.Warn.Println("session timeout:", sess_id, pars["msisdn_a"])
+				com.Warn.Println("session timeout:", sess_id, pars["msisdn_a"])
 				f_end(sess_id)
 				return
 			}
@@ -379,7 +417,7 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 			startTime = time.Now()
 			if c_sess_state == UPDATE_SENDING {
 				pars["request_number"] = fmt.Sprint(ite)
-				n_data_term, _ := t.FillTemplate("data_upd", pars)
+				n_data_term, _ := t.FillTemplate(template[1], pars)
 				var c_mscc []d.AVP
 				var info []string
 				for _, v := range cats {
@@ -436,7 +474,10 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 				}
 
 				n_data_term.AddAVPs_Tail(c_mscc)
-				l.Info.Printf("-> U %d %s %s", ite, pars["msisdn_a"], strings.Join(info, " "))
+				com.Info.Printf("-> U %d %s %s", ite, pars["msisdn_a"], strings.Join(info, " "))
+				if m_print_decoded_message { 
+					com.Log.Println("\nREQ:\n---\n"+n_data_term	.ToString())
+				}
 				ch_send <- n_data_term
 				c_sess_state = UPDATE_SENT
 			}
@@ -465,9 +506,9 @@ func Datasession(sess_id string, base_pars map[string]string, ch_send chan<- d.M
 					}
 				}
 
-				n_data_term, _ := t.FillTemplate("data_term", pars)
+				n_data_term, _ := t.FillTemplate(template[2], pars)
 				n_data_term.AddAVPs_Tail(c_mscc)
-				l.Info.Printf("-> T %d %s %s", ite, pars["msisdn_a"], strings.Join(info, " "))
+				com.Info.Printf("-> T %d %s %s", ite, pars["msisdn_a"], strings.Join(info, " "))
 				ch_send <- n_data_term
 				c_sess_state = TERM_SENT
 			}
@@ -495,31 +536,3 @@ func create_MSCC(category int, rep_reason int, used_unit int, req_unit bool) d.A
 
 }
 
-func result_code_to_string(rc int) string {
-
-	switch rc {
-	case d.SUCCESS:
-		return "SUCCESS"
-	case d.END_USER_SERVICE_DENIED:
-		return "END_USER_SERVICE_DENIED"
-	case d.CREDIT_CONTROL_NOT_APPLICABLE:
-		return "CREDIT_CONTROL_NOT_APPLICABLE"
-	case d.CREDIT_LIMIT_REACHED:
-		return "CREDIT_LIMIT_REACHED"
-	case d.USER_UNKNOWN:
-		return "USER_UNKNOWN"
-	case d.UNKNOWN_SESSION_ID:
-		return "UNKNOWN_SESSION_ID"
-	case d.RATING_FAILED:
-		return "RATING_FAILED"
-	case d.AUTHORIZATION_REJECTED:
-		return "AUTHORIZATION_REJECTED"
-	case d.AUTHENTICATION_REJECTED:
-		return "AUTHENTICATION_REJECTED"
-	case d.UNABLE_TO_DELIVER:
-		return "UNABLE_TO_DELIVER"
-	default:
-		return "UNKNOWN"
-	}
-
-}

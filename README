@@ -4,33 +4,37 @@ Sessions(not event based messages) will be added.
 A CER will be sent and if the result is success then a message based on the template will be sent.
 
 build:
-cd session
-go build -o ../send_mess main.go 
+go build -tags netgo -o send_mess session/main.go
 
 
 running:
-./send_mess conf/test_mms.yaml
+./send_mess conf/test.peer conf/mms.yaml
 
-where conf/test_mms.yaml is like:
+where conf/test.peer:
 ---
 diam:
   peer: localhost:3868
   destination_realm: destrealm
   origin_host: myhost
-  origin_realm: myrealm
+  origin_realm: myorig
+
+conf/mms.yaml:
+---
 conf_dir:  # absolute path or relative to cwd
-  dictionary: "./dict"     # -> contains dictionary for decoding messages
-  templates: "./templates"  # -> contains diameter templates
+  dictionary: "./dict"
+  templates: "./templates"
 template:
   type: event
-  name: mms_momt          # -> refers to ./templates/mms_momt.template 
-props:                    # -> these values will be substituted in the template
+  name: mms_momt 
+session_parameters:
+  print_decoded_message: true
+props:
   msisdn_a: 12345
   message_id: tool
   user_location: 21670
   imsi_a: 21970123456789
-  msisdn_b : 3770220933242
-
+  msisdn_b: 3770220933242
+  mms_content_type: 2
 In the template:
 {{prop}} will be replaced the property value from the yaml config.
 {{prop:def_value}} will be replaced with value from config, defaults to dev_value if not configured

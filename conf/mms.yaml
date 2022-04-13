@@ -1,15 +1,12 @@
 ---
-diam:
-  peer: localhost:3868
-  destination_realm: destrealm
-  origin_host: myhost
-  origin_realm: myrealm
 conf_dir:  # absolute path or relative to cwd
   dictionary: "./dict"
   templates: "./templates"
 template:
   type: event
   name: mms_momt 
+session_parameters:
+  print_decoded_message: true
 props:
   msisdn_a: 12345
   message_id: tool
